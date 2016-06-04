@@ -1,0 +1,67 @@
+mcursor macro v1,v2
+    xor ax,ax            ; servicio
+    mov ax,0200h           ; renglon
+    mov dh,v1          ;fila 25
+    mov dl,v2          ;columna 80
+    mov bx, 0000h
+    int 10h  
+endm
+
+limpia macro
+MOV AX,0600H ; Peticion para limpiar pantalla
+    mov bh,07h
+    mov cx,0000h
+    mov dx,184fh
+    int 10h   ;
+    endm
+.model small
+.stack
+.data
+    x db 40
+    y db 12
+.code
+	mov ax,@data ; Primera linea necesarxa
+	mov ds,ax ; Segunda linea necesaria
+	limpia
+
+  mcursor y,x
+  xor ax,ax
+  ini:
+  mov  ah,10h
+  int 16h
+  ;direccion
+  cmp ah,48h
+   je arriba
+
+  cmp ah,50h
+    je abajo
+
+ cmp ah,4Dh  
+  je derecha
+
+ cmp ah,4Bh  
+  je izquierda
+  jmp fin
+
+  arriba:
+    dec y 
+    mcursor y,x    
+    jmp ini
+
+  abajo:
+    inc y 
+    mcursor y,x
+    jmp ini
+
+  derecha:
+    inc x 
+    mcursor y,x
+    jmp ini
+
+  izquierda:
+    dec x 
+    mcursor y,x
+    jmp ini
+fin:
+ .exit
+end
